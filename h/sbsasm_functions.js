@@ -41,6 +41,7 @@ function surrogatePairToCodePoint(charCode1, charCode2) {
 	return ((charCode1 & 0x3FF) << 10) + (charCode2 & 0x3FF) + 0x10000;
 }
 
+// size is number of bytes
 function readUTF8StringNoSize(offset, size, bigEndian) {
 	let bytes = document.Read(offset, size);
 	let i = 0;
@@ -92,26 +93,27 @@ function TTF_numTables(thisOffset) {
 	return readNumber(thisOffset + 4, 2, 1);
 }
 
-function TTF_tableRecordsOffset(thisOffset, index) {
+function TTF_tableRecords_offset(thisOffset, index) {
 	return thisOffset + 12 + 16 * index;
 }
 
-function TTF_tableRecordsOffsetByTag(thisOffset, tag) {
+function TTF_tableRecords_indexBy_tag(thisOffset, tag) {
 	let numTables = TTF_numTables(thisOffset);
 	let i = 0;
 	while (i < numTables) {
-		let offset = TTF_tableRecordsOffset(thisOffset, i);
+		let offset = TTF_tableRecords_offset(thisOffset, i);
 		let string = readUTF8StringNoSize(offset, 4, 1);
 		if (string == tag)
-			return offset;
+			return i;
 		i += 1;
 	}
-	return 0;
+	return -1;
 }
 
-function TTF_NamingTableOffset(thisOffset) {
-	let offset = TTF_tableRecordsOffsetByTag(thisOffset, "name");
-	if (offset == 0)
+function TTF_NamingTable_getOffset(thisOffset) {
+	let index = TTF_tableRecords_indexBy_tag(thisOffset, "name");
+	if (index == -1)
 		return 0;
+	let offset = TTF_tableRecords_offset(thisOffset, index);
 	return thisOffset + TableRecord_offset(offset);
 }
