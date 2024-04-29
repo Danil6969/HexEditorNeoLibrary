@@ -153,7 +153,7 @@ public struct TTF
 	var currentTableIndex = 0;
 	TableRecord tableRecords[numTables];
 
-	var offNamingTable = TTF_NamingTableOffset(baseTTF);
+	var offNamingTable = TTF_NamingTable_getOffset(baseTTF);
 	$assert(offNamingTable != 0, "Invalid TTF (2)");
 	var valStorageOffset = NamingTable_storageOffset(offNamingTable);
 	var offNameRecord0 = NamingTable_nameRecordOffset(offNamingTable, 0);
@@ -188,21 +188,16 @@ struct parameterText
 	UINT constantValueString as UTF16AlignedString *(0x34);
 };
 
-enum filterType : BYTE
+struct compFilter_01
 {
-	FILTER_UNIFORM =	0x01,
-	FILTER_TEXT =		0x03,
-	FILTER_BLUR =		0x0b,
-};
-
-struct filterUniform
-{
+	$print("filter", "uniform");
 	UINT unk1;
 	Float4 outputcolor;
 };
 
-struct filterText
+struct compFilter_03
 {
+	$print("filter", "text");
 	BYTE unk1 : 2;
 	BYTE flag_background : 2;
 	BYTE unk3 : 4;
@@ -227,38 +222,56 @@ struct filterText
 		UINT input;
 	}
 	else if (flag_background != 0) {
-		$assert(0, "Invalid filterText(1)");
+		$assert(0, "Invalid compFilter03(1)");
 	}
 	if (flag_fontsize == 1) {
 		FLOAT fontsize;
 	}
 };
 
-struct filterBlur
+struct compFilter_0b
 {
-	UINT unk1;
+	$print("filter", "blur");
+	BYTE unk1[12];
 };
 
-public struct compFilter
+struct compFilter_1b
 {
-	BYTE unk1;
-	BYTE unk2;
-	BYTE unk3;
-	$assert(unk2 == 0x88, "Invalid filter (1)");
-	$assert(unk3 == 0x09, "Invalid filter (2)");
-	BYTE filterType;
-	switch (filterType)
+	$print("filter", "blur");
+	BYTE unk1[12];
+	FLOAT intensity;
+};
+
+enum filterType : BYTE
+{
+	FILTER_UNIFORM	= 0x01,
+	FILTER_TEXT		= 0x03,
+	FILTER_BLUR0	= 0x0b,
+	FILTER_BLUR1	= 0x1b,
+};
+
+public struct compImplementation
+{
+	BYTE unk1[3];
+	$assert(unk1[1] == 0x88, "Invalid compImplementation (1)");
+	$assert(unk1[2] == 0x09, "Invalid compImplementation (2)");
+	BYTE encodedType;
+	switch (encodedType)
 	{
 		case FILTER_UNIFORM:
-			filterUniform filter;
+			compFilter_01 compFilter;
 			break;
 		case FILTER_TEXT:
-			filterText filter;
+			compFilter_03 compFilter;
 			break;
-		case FILTER_BLUR:
-			filterBlur filter;
+		case FILTER_BLUR0:
+			compFilter_0b compFilter;
+			break;
+		case FILTER_BLUR1:
+			compFilter_1b compFilter;
 			break;
 		default:
-			$assert(0, "Invalid filter (3)");
+			$assert(0, "Invalid compImplementation (3)");
 	}
+	BYTE unk2[8];
 };
