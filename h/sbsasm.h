@@ -19,7 +19,8 @@ struct UTF8StringNoSize
 	UTF8Character chars[size];
 	var i = 0;
 	var text = "";
-	while (i < size) {
+	while (i < size)
+	{
 		var charCode = chars[i].charCode;
 		text = text + decodeChar(charCode);
 		i = i + 1;
@@ -42,14 +43,17 @@ struct UTF16StringNoSize
 	UTF16Character chars[size];
 	var i = 0;
 	var text = "";
-	while (i < size) {
+	while (i < size)
+	{
 		var charCode = chars[i].charCode;
-		if ((charCode & 0xF800) == 0xD800) {
+		if ((charCode & 0xF800) == 0xD800)
+		{
 			i = i + 1;
 			$assert(i < size, "Invalid UTF16StringNoSize (1)");
 			text = text + decodeChar(surrogatePairToCodePoint(charCode, chars[i].charCode));
 		}
-		else {
+		else
+		{
 			text = text + decodeChar(charCode);
 		}
 		i = i + 1;
@@ -73,14 +77,17 @@ struct UTF16AlignedString
 	UTF16AlignedCharacter chars[size];
 	var i = 0;
 	var text = "";
-	while (i < size) {
+	while (i < size)
+	{
 		var charCode = chars[i].charCode;
-		if ((charCode & 0xF800) == 0xD800) {
+		if ((charCode & 0xF800) == 0xD800)
+		{
 			i = i + 1;
 			$assert(i < size, "Invalid UTF16AlignedString (1)");
 			text = text + decodeChar(surrogatePairToCodePoint(charCode, chars[i].charCode));
 		}
-		else {
+		else
+		{
 			text = text + decodeChar(charCode);
 		}
 		i = i + 1;
@@ -97,12 +104,14 @@ struct NameRecord
 	WORD nameID;
 	WORD length;
 	var text = "";
-	if (encodingID == 0) {
+	if (encodingID == 0)
+	{
 		var size = length;
 		WORD stringOffset as UTF8StringNoSize *(baseNamingTable + storageOffset);
 		text = readUTF8StringNoSize(baseNamingTable + storageOffset + stringOffset, length, 1);
 	}
-	if (encodingID == 1 || encodingID == 3) {
+	if (encodingID == 1 || encodingID == 3)
+	{
 		var size = length / 2; // pass size to unsized string
 		WORD stringOffset as UTF16StringNoSize *(baseNamingTable + storageOffset);
 		text = readUTF16StringNoSize(baseNamingTable + storageOffset + stringOffset, length, 1);
@@ -128,10 +137,12 @@ struct TableRecord
 #pragma byte_order(BigEndian)
 	char tableTag[4];
 	UINT checksum;
-	if (tableTag == "name") {
+	if (tableTag == "name")
+	{
 		UINT offset as NamingTable *(baseTTF);
 	}
-	else {
+	else
+	{
 		UINT offset;
 	}
 	UINT length;
@@ -207,24 +218,29 @@ struct compFilter_03
 	BYTE unk6;
 	UINT unk8;
 	UINT val;
-	if (val == 0) {
+	if (val == 0)
+	{
 		$remove_to(ref(val));
 		[onread("\"\"")]
 		UINT text;
 	}
-	else {
+	else
+	{
 		$remove_to(ref(val));
 		parameterText text;
 	}
 	UINT unk9;
 	UINT unk10;
-	if (flag_background == 3) {
+	if (flag_background == 3)
+	{
 		UINT input;
 	}
-	else if (flag_background != 0) {
+	else if (flag_background != 0)
+	{
 		$assert(0, "Invalid compFilter03(1)");
 	}
-	if (flag_fontsize == 1) {
+	if (flag_fontsize == 1)
+	{
 		FLOAT fontsize;
 	}
 };

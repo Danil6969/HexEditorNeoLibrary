@@ -19,7 +19,8 @@ struct UTF8StringNoSize
 	UTF8Character chars[size];
 	var i = 0;
 	var text = "";
-	while (i < size) {
+	while (i < size)
+	{
 		var charCode = chars[i].charCode;
 		text = text + decodeChar(charCode);
 		i = i + 1;
@@ -52,16 +53,19 @@ struct DecodedString
 	var remainingBytes;
 	var i;
 	var processedBytes = 0;
-	for (remainingBytes = bytesCount; remainingBytes >= groupLength; remainingBytes = remainingBytes - groupLength) {
+	for (remainingBytes = bytesCount; remainingBytes >= groupLength; remainingBytes = remainingBytes - groupLength)
+	{
 		var result = "";
-		for (i = 0; i < groupLength; i = i + 1) {
+		for (i = 0; i < groupLength; i = i + 1)
+		{
 			result = result + " " + format(formatString,bytesBuffer[processedBytes + i]);
 		}
 		processedBytes = processedBytes + groupLength;
 		$print("", result);
 	}
 	var result = "";
-	for (i = 0; i < remainingBytes; i = i + 1) {
+	for (i = 0; i < remainingBytes; i = i + 1)
+	{
 		result = result + " " + format(formatString,bytesBuffer[processedBytes + i]);
 	}
 	processedBytes = processedBytes + remainingBytes;
@@ -77,13 +81,16 @@ struct IndirectBytesDecoder
 	var remainingBytes;
 	var i;
 	var processedBytes = 0;
-	for (remainingBytes = count; remainingBytes >= groupLength; remainingBytes = remainingBytes - groupLength) {
-		for (i = 0; i < groupLength; i = i + 1) {
+	for (remainingBytes = count; remainingBytes >= groupLength; remainingBytes = remainingBytes - groupLength)
+	{
+		for (i = 0; i < groupLength; i = i + 1)
+		{
 			bytesBuffer[processedBytes + i] = decodedChunkBytes[fetchPos + i - 1];
 		}
 		processedBytes = processedBytes + groupLength;
 	}
-	for (i = 0; i < remainingBytes; i = i + 1) {
+	for (i = 0; i < remainingBytes; i = i + 1)
+	{
 		bytesBuffer[processedBytes + i] = decodedChunkBytes[fetchPos + i - 1];
 	}
 };
@@ -91,7 +98,8 @@ struct IndirectBytesDecoder
 struct DirectBytesDecoder
 {
 	BYTE rawBytes[count];
-	for (var i = 0; i < count; i = i + 1) {
+	for (var i = 0; i < count; i = i + 1)
+	{
 		bytesBuffer[i] = rawBytes[i];
 	}
 };
@@ -138,11 +146,13 @@ struct LZFBlock
 			IndirectBytesDecoder bytesDecoder;
 			DecodedByte decodedBlockBytes[count];
 	}
-	for (var i = 0; i < count; i = i + 1) {
+	for (var i = 0; i < count; i = i + 1)
+	{
 		decodedChunkBytes[outPos + i] = decodedBlockBytes[i].value;
 	}
 	outPos = outPos + count;
-	if (chunkLength <= inPos) {
+	if (chunkLength <= inPos)
+	{
 		$break_array(true);
 	}
 };
@@ -160,7 +170,8 @@ public struct LZFChunk
 #pragma byte_order(LittleEndian)
 	var decodedChunkBytes[originalLength] = {0};
 	var decodedChunkBytes[originalLength] = {0};
-	for (var i = 0; i < originalLength; i = i + 1) {
+	for (var i = 0; i < originalLength; i = i + 1)
+	{
 		decodedChunkBytes[i] = 0;
 	}
 	var inPos = 0;
@@ -170,9 +181,9 @@ public struct LZFChunk
 	LZFBlock blocks[*];
 	var bytesCount = originalLength;
 	var bytesBuffer[bytesCount] = {0};
-	for (var i = 0; i < bytesCount; i = i + 1) {
+	for (var i = 0; i < bytesCount; i = i + 1)
+	{
 		bytesBuffer[i] = decodedChunkBytes[i];
 	}
-	DecodedByte decodedBytes[bytesCount];
 	DecodedString decodedString;
 };

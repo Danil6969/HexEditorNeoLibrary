@@ -19,7 +19,8 @@ struct UTF8StringNoSize
 	UTF8Character chars[size];
 	var i = 0;
 	var text = "";
-	while (i < size) {
+	while (i < size)
+	{
 		var charCode = chars[i].charCode;
 		text = text + decodeChar(charCode);
 		i = i + 1;
@@ -61,7 +62,8 @@ public struct CpioHeader
 	var size = namesize.value - 1;
 	UTF8StringNoSize name;
 	var isTrailer = namesize.value == 11;
-	if (isTrailer) {
+	if (isTrailer)
+	{
 		isTrailer = isTrailer && name.chars[0].charCode == 'T';
 		isTrailer = isTrailer && name.chars[1].charCode == 'R';
 		isTrailer = isTrailer && name.chars[2].charCode == 'A';
@@ -77,11 +79,13 @@ public struct CpioHeader
 	var pad = getPadding(&terminator + 1, 4);
 	BYTE padding1[pad];
 	BYTE file[filesize.value];
-	if (filesize.value > 0) {
+	if (filesize.value > 0)
+	{
 		pad = getPadding(&file + filesize.value, 4);
 		BYTE padding2[pad];
 	}
-	if (isTrailer) {
+	if (isTrailer)
+	{
 		$break_array(true);
 	}
 };
@@ -97,7 +101,8 @@ struct DecodedByte
 struct DirectBytesDecoder
 {
 	BYTE rawBytes[count];
-	for (var i = 0; i < count; i = i + 1) {
+	for (var i = 0; i < count; i = i + 1)
+	{
 		bytesBuffer[i] = rawBytes[i];
 	}
 };
@@ -107,7 +112,8 @@ struct IndirectBytesDecoder
 	$assert(array_index >= 0, "Invalid IndirectBytesDecoder(1)");
 	var fetchPos = outPos - distance;
 	$print("fetchPos", fetchPos);
-	for (var i = 0; i < count; i = i + 1) {
+	for (var i = 0; i < count; i = i + 1)
+	{
 		bytesBuffer[i] = decodedChunkBytes[fetchPos + i - 1];
 	}
 };
@@ -153,7 +159,8 @@ public struct tegrabl_sigheader
 	isCompressed = isCompressed && compression[11] == 0;
 	isCompressed = isCompressed && compression[12] == 0;
 	isCompressed = isCompressed && compression[13] == 0;
-	if (!isCompressed) {
+	if (!isCompressed)
+	{
 		$remove_to(ref(compression));
 	}
 	BYTE file[binarylength];
